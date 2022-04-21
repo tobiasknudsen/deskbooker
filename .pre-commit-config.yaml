@@ -1,0 +1,27 @@
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.3.0
+    hooks:
+    - id: trailing-whitespace
+    - id: check-merge-conflict
+    - id: end-of-file-fixer
+    - id: no-commit-to-branch
+      args: [--branch, main]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.5.1
+    hooks:
+      - id: isort
+  - repo: https://github.com/psf/black
+    rev: 20.8b1
+    hooks:
+      - id: black
+        language_version: python3.8
+  - repo: local
+    hooks:
+    - id: flake8
+      name: flake8
+      language: system
+      pass_filenames: true
+      entry: flake8 --count --max-complexity=10 --statistics --ignore=C901
+      types: [python]
