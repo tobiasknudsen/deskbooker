@@ -38,9 +38,11 @@ def main():
             arg_parser.error("book requires --from and --to")
         try:
             from_date = dateutil.parser.parse(args.from_date)
+        except dateutil.parser._parser.ParserError:
             arg_parser.error(f"{args.from_date} is not a valid date format")
         try:
             to_date = dateutil.parser.parse(args.to_date)
+        except dateutil.parser._parser.ParserError:
             arg_parser.error(f"{args.to_date} is not a valid date format")
         current_date = from_date
         while current_date <= to_date:
