@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 import argparse
-import sys
-from dateutil import parser
 import json
 import os
+import sys
 from datetime import timedelta
+
+from dateutil import parser
 from dotenv import load_dotenv
+
 from .deskbird_client import DeskbirdClient
 
 load_dotenv()
@@ -20,7 +22,9 @@ db_client = DeskbirdClient(
 )
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument("function_name", type=str, choices=["book", "checkin"], help="Function name")
+arg_parser.add_argument(
+    "function_name", type=str, choices=["book", "checkin"], help="Function name"
+)
 arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
 arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
 
