@@ -20,16 +20,16 @@ db_client = DeskbirdClient(
 )
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument("function", type=str, help="Function name")
+arg_parser.add_argument("function_name", type=str, choices=["book", "checkin"], help="Function name")
 arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
 arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
 
 
 def main():
     args = arg_parser.parse_args()
-    if args.function == "checkin":
+    if args.function_name == "checkin":
         db_client.checkin()
-    elif args.function == "book":
+    elif args.function_name == "book":
         if args.from_date is None or args.to_date is None:
             arg_parser.error("book requires --from and --to")
         try:
@@ -67,8 +67,6 @@ def main():
                         )
                     )
             current_date = current_date + timedelta(days=1)
-    else:
-        print(f"{args.function} is not a function")
     return 0
 
 
