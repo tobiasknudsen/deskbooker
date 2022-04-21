@@ -3,6 +3,8 @@ from datetime import datetime
 
 import requests
 
+from desk_map import GROWTH_DESKS
+
 from .auth import get_access_token
 
 
@@ -28,7 +30,7 @@ class DeskbirdClient:
         )
 
     def update_desk(self, zone_item_id: str):
-        self.zone_item_id = zone_item_id
+        self.zone_item_id = GROWTH_DESKS[zone_item_id]
 
     def book_desk(self, date):
         url = "https://web.deskbird.app/api/v1.1/user/bookings"

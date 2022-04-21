@@ -51,13 +51,15 @@ def main():
                 to_date = dateutil.parser.parse(args.to_date)
             except dateutil.parser._parser.ParserError:
                 arg_parser.error(f"{args.to_date} is not a valid date format")
-            try:
-                desk = dateutil.parser.parse(args.desk_number)
-                db_client.update_desk(desk)
-            except dateutil.parser._parser.ParserError:
-                arg_parser.error(
-                    f"Could not find desk number '{desk}' in the desk map."
-                )
+            if args.desk_number is not None:
+                desk = args.desk_number
+                try:
+                    db_client.update_desk(desk)
+                    print(db_client.zone_item_id)
+                except Exception:
+                    arg_parser.error(
+                        f"Could not find desk number '{desk}' in the desk map."
+                    )
             current_date = from_date
             while current_date <= to_date:
                 if current_date.weekday() < 5:
@@ -84,8 +86,8 @@ def main():
                                 ]
                             )
                         )
-                current_date = current_date + timedelta(days=1)
-        return 0
+                    current_date = current_date + timedelta(days=1)
+            return 0
     except KeyboardInterrupt:
         print("Stopping...")
 
