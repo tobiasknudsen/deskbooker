@@ -6,12 +6,12 @@ import json
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
-from .deskbird_client import Deskbird_client
+from .deskbird_client import DeskbirdClient
 
 load_dotenv()
 
 
-db_client = Deskbird_client(
+db_client = DeskbirdClient(
     refresh_token=os.environ["REFRESH_TOKEN"],
     token_key=os.environ["TOKEN_KEY"],
     resource_id=os.environ["RESOURCE_ID"],

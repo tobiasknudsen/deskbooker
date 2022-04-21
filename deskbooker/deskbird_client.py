@@ -4,7 +4,7 @@ import requests
 from .auth import get_access_token
 
 
-class Deskbird_client:
+class DeskbirdClient:
     access_token = None
     refresh_token = None
     token_key = None
