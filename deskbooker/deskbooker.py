@@ -17,6 +17,7 @@ db_client = DeskbirdClient(
     refresh_token=os.environ["REFRESH_TOKEN"],
     token_key=os.environ["TOKEN_KEY"],
     resource_id=os.environ["RESOURCE_ID"],
+    zone=os.environ["ZONE"],
     zone_item_id=os.environ["ZONE_ITEM_ID"],
     workspace_id=os.environ["WORKSPACE_ID"],
 )

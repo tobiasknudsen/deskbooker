@@ -3,7 +3,7 @@ from datetime import datetime
 
 import requests
 
-from desk_map import GROWTH_DESKS
+from desk_map import DESKS
 
 from .auth import get_access_token
 
@@ -17,12 +17,19 @@ class DeskbirdClient:
     workspace_id = None
 
     def __init__(
-        self, refresh_token, token_key, resource_id, zone_item_id, workspace_id
+        self,
+        refresh_token,
+        token_key,
+        resource_id,
+        zone_item_id,
+        zone,
+        workspace_id,
     ):
         self.refresh_token = refresh_token
         self.token_key = token_key
         self.resource_id = resource_id
         self.zone_item_id = zone_item_id
+        self.zone = zone
         self.workspace_id = workspace_id
 
         self.access_token = get_access_token(
@@ -30,7 +37,7 @@ class DeskbirdClient:
         )
 
     def update_desk(self, zone_item_id: str):
-        self.zone_item_id = GROWTH_DESKS[zone_item_id]
+        self.zone_item_id = DESKS[self.zone][zone_item_id]
 
     def book_desk(self, date):
         url = "https://web.deskbird.app/api/v1.1/user/bookings"
