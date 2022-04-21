@@ -23,7 +23,12 @@ class DeskbirdClient:
         self.zone_item_id = zone_item_id
         self.workspace_id = workspace_id
 
-        self.access_token = get_access_token(self.token_key, self.refresh_token)
+        self.access_token = get_access_token(
+            self.token_key, self.refresh_token
+        )
+
+    def update_desk(self, zone_item_id: str):
+        self.zone_item_id = zone_item_id
 
     def book_desk(self, date):
         url = "https://web.deskbird.app/api/v1.1/user/bookings"
@@ -61,7 +66,8 @@ class DeskbirdClient:
 
     def checkin(self):
         url = (
-            f"https://app.deskbird.com/api/v1.1/workspaces/{self.workspace_id}/checkIn"
+            f"https://app.deskbird.com/api/v1.1/workspaces/"
+            f"{self.workspace_id}/checkIn"
         )
         body = {
             "isInternal": True,
@@ -76,7 +82,9 @@ class DeskbirdClient:
         bookings = json.loads(self.get_bookings().text)
         for booking in bookings["results"]:
             if (
-                datetime.fromtimestamp(int(booking["bookingStartTime"] / 1000)).date()
+                datetime.fromtimestamp(
+                    int(booking["bookingStartTime"] / 1000)
+                ).date()
                 == datetime.today().date()
             ):
                 if booking["checkInStatus"] == "checkedIn":

@@ -1,4 +1,4 @@
-#Format of GROWTH_DESKS is Desk number: desk_id
+# Format of GROWTH_DESKS is Desk number: desk_id
 GROWTH_DESKS = {
     "Desk 1": 77876,
     "Desk 2": 77877,
@@ -17,6 +17,5 @@ GROWTH_DESKS = {
     "Desk 15": 78201,
     "Desk 16": 78202,
     "Desk 17": 78203,
-    "Desk 18": 78204
+    "Desk 18": 78204,
 }
-
