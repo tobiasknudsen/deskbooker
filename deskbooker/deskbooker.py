@@ -5,7 +5,7 @@ import os
 import sys
 from datetime import timedelta
 
-from dateutil import parser
+import dateutil.parser
 from dotenv import load_dotenv
 
 from .deskbird_client import DeskbirdClient
@@ -37,12 +37,10 @@ def main():
         if args.from_date is None or args.to_date is None:
             arg_parser.error("book requires --from and --to")
         try:
-            from_date = parser.parse(args.from_date)
-        except Exception:
+            from_date = dateutil.parser.parse(args.from_date)
             arg_parser.error(f"{args.from_date} is not a valid date format")
         try:
-            to_date = parser.parse(args.to_date)
-        except Exception:
+            to_date = dateutil.parser.parse(args.to_date)
             arg_parser.error(f"{args.to_date} is not a valid date format")
         current_date = from_date
         while current_date <= to_date:
