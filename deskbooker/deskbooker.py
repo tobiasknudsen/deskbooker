@@ -30,48 +30,51 @@ arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
 
 
 def main():
-    args = arg_parser.parse_args()
-    if args.function_name == "checkin":
-        db_client.checkin()
-    elif args.function_name == "book":
-        if args.from_date is None or args.to_date is None:
-            arg_parser.error("book requires --from and --to")
-        try:
-            from_date = dateutil.parser.parse(args.from_date)
-        except dateutil.parser._parser.ParserError:
-            arg_parser.error(f"{args.from_date} is not a valid date format")
-        try:
-            to_date = dateutil.parser.parse(args.to_date)
-        except dateutil.parser._parser.ParserError:
-            arg_parser.error(f"{args.to_date} is not a valid date format")
-        current_date = from_date
-        while current_date <= to_date:
-            if current_date.weekday() < 5:
-                response = db_client.book_desk(current_date)
-                if response.status_code != 201:
-                    print(
-                        " | ".join(
-                            [
-                                str(current_date.date()),
-                                str(response.status_code),
-                                response.reason,
-                                json.loads(response.text)["message"],
-                            ]
+    try:
+        args = arg_parser.parse_args()
+        if args.function_name == "checkin":
+            db_client.checkin()
+        elif args.function_name == "book":
+            if args.from_date is None or args.to_date is None:
+                arg_parser.error("book requires --from and --to")
+            try:
+                from_date = dateutil.parser.parse(args.from_date)
+            except dateutil.parser._parser.ParserError:
+                arg_parser.error(f"{args.from_date} is not a valid date format")
+            try:
+                to_date = dateutil.parser.parse(args.to_date)
+            except dateutil.parser._parser.ParserError:
+                arg_parser.error(f"{args.to_date} is not a valid date format")
+            current_date = from_date
+            while current_date <= to_date:
+                if current_date.weekday() < 5:
+                    response = db_client.book_desk(current_date)
+                    if response.status_code != 201:
+                        print(
+                            " | ".join(
+                                [
+                                    str(current_date.date()),
+                                    str(response.status_code),
+                                    response.reason,
+                                    json.loads(response.text)["message"],
+                                ]
+                            )
                         )
-                    )
-                else:
-                    print(
-                        " | ".join(
-                            [
-                                str(current_date.date()),
-                                str(response.status_code),
-                                response.reason,
-                                "Desk is booked!",
-                            ]
+                    else:
+                        print(
+                            " | ".join(
+                                [
+                                    str(current_date.date()),
+                                    str(response.status_code),
+                                    response.reason,
+                                    "Desk is booked!",
+                                ]
+                            )
                         )
-                    )
-            current_date = current_date + timedelta(days=1)
-    return 0
+                current_date = current_date + timedelta(days=1)
+        return 0
+    except KeyboardInterrupt:
+        print("Stopping...")
 
 
 if __name__ == "__main__":
