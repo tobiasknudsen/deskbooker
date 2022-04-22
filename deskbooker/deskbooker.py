@@ -18,7 +18,7 @@ db_client = DeskbirdClient(
     token_key=os.environ["TOKEN_KEY"],
     resource_id=os.environ["RESOURCE_ID"],
     zone=os.environ["ZONE"],
-    zone_item_id=os.environ["ZONE_ITEM_ID"],
+    desk_id=os.environ["DESK_ID"],
     workspace_id=os.environ["WORKSPACE_ID"],
 )
 
@@ -60,6 +60,31 @@ def main():
                 except Exception:
                     arg_parser.error(
                         f"Could not find zone '{zone}' in the desk map."
+                    )
+        if args.desk_number is not None:
+            desk = args.desk_number
+            # print(desk)
+            try:
+                db_client.set_desk(desk)
+                # print(db_client.zone_item_id)
+            except Exception:
+                arg_parser.error(
+                    f"Could not find desk number '{desk}' in the desk map."
+                )
+        current_date = from_date
+        while current_date <= to_date:
+            if current_date.weekday() < 5:
+                response = db_client.book_desk(current_date)
+                if response.status_code != 201:
+                    print(
+                        " | ".join(
+                            [
+                                str(current_date.date()),
+                                str(response.status_code),
+                                response.reason,
+                                json.loads(response.text)["message"],
+                            ]
+                        )
                     )
             if args.desk_number is not None:
                 desk = args.desk_number

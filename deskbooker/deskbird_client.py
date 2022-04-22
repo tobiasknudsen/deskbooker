@@ -13,6 +13,7 @@ class DeskbirdClient:
     refresh_token = None
     token_key = None
     resource_id = None
+    zone = None
     zone_item_id = None
     workspace_id = None
 
@@ -21,23 +22,32 @@ class DeskbirdClient:
         refresh_token,
         token_key,
         resource_id,
-        zone_item_id,
         zone,
+        desk_id,
         workspace_id,
     ):
         self.refresh_token = refresh_token
         self.token_key = token_key
         self.resource_id = resource_id
-        self.zone_item_id = zone_item_id
         self.zone = zone
+        self.zone_item_id = self.get_zone_item_id(desk_id)
         self.workspace_id = workspace_id
 
         self.access_token = get_access_token(
             self.token_key, self.refresh_token
         )
 
-    def update_desk(self, zone_item_id: str):
-        self.zone_item_id = DESKS[self.zone][zone_item_id]
+    def set_desk(self, desk_id: str):
+        zone_keys = DESKS.keys()
+        if self.zone in zone_keys and desk_id in DESKS[self.zone]:
+            self.zone_item_id = DESKS[self.zone][desk_id]
+
+    def set_zone(self, zone: str):
+        if zone in DESKS.keys():
+            self.zone = zone
+
+    def get_zone_item_id(self, desk_id):
+        return DESKS[self.zone][desk_id]
 
     def book_desk(self, date):
         url = "https://web.deskbird.app/api/v1.1/user/bookings"
