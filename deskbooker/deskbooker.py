@@ -52,83 +52,47 @@ def main():
             except dateutil.parser._parser.ParserError:
                 arg_parser.error(f"{args.to_date} is not a valid date format")
             if args.zone is not None:
-                zone = args.zone
                 try:
-                    db_client.update_zone(zone)
+                    db_client.update_zone(args.zone)
                 except Exception:
-                    arg_parser.error(f"Could not find zone '{zone}' in the desk map.")
-        if args.desk_number is not None:
-            desk = args.desk_number
-            # print(desk)
-            try:
-                db_client.set_desk(desk)
-                # print(db_client.zone_item_id)
-            except Exception:
-                arg_parser.error(
-                    f"Could not find desk number '{desk}' in the desk map."
-                )
-        current_date = from_date
-        while current_date <= to_date:
-            if current_date.weekday() < 5:
-                response = db_client.book_desk(current_date)
-                if response.status_code != 201:
-                    print(
-                        " | ".join(
-                            [
-                                str(current_date.date()),
-                                str(response.status_code),
-                                response.reason,
-                                json.loads(response.text)["message"],
-                            ]
-                        )
+                    arg_parser.error(
+                        f"Could not find zone '{args.zone}' in the desk map."
                     )
             if args.desk_number is not None:
-                desk = args.desk_number
                 try:
-                    from_date = dateutil.parser.parse(args.from_date)
-                except dateutil.parser._parser.ParserError:
-                    arg_parser.error(f"{args.from_date} is not a valid date format")
-                try:
-                    to_date = dateutil.parser.parse(args.to_date)
-                except dateutil.parser._parser.ParserError:
-                    arg_parser.error(f"{args.to_date} is not a valid date format")
-                if args.desk_number is not None:
-                    desk = args.desk_number
-                    try:
-                        db_client.update_desk(desk)
-                        print(db_client.zone_item_id)
-                    except Exception:
-                        arg_parser.error(
-                            f"Could not find desk number '{desk}' in the desk map."
+                    db_client.set_desk(args.desk_number)
+                except Exception:
+                    arg_parser.error(
+                        f"Could not find desk number '{args.desk_number}' in the desk map."
+                    )
+            current_date = from_date
+            while current_date <= to_date:
+                if current_date.weekday() < 5:
+                    response = db_client.book_desk(current_date)
+                    if response.status_code != 201:
+                        print(
+                            " | ".join(
+                                [
+                                    str(current_date.date()),
+                                    str(response.status_code),
+                                    response.reason,
+                                    json.loads(response.text)["message"],
+                                ]
+                            )
                         )
-                current_date = from_date
-                while current_date <= to_date:
-                    if current_date.weekday() < 5:
-                        response = db_client.book_desk(current_date)
-                        if response.status_code != 201:
-                            print(
-                                " | ".join(
-                                    [
-                                        str(current_date.date()),
-                                        str(response.status_code),
-                                        response.reason,
-                                        json.loads(response.text)["message"],
-                                    ]
-                                )
+                    else:
+                        print(
+                            " | ".join(
+                                [
+                                    str(current_date.date()),
+                                    str(response.status_code),
+                                    response.reason,
+                                    "Desk is booked!",
+                                ]
                             )
-                        else:
-                            print(
-                                " | ".join(
-                                    [
-                                        str(current_date.date()),
-                                        str(response.status_code),
-                                        response.reason,
-                                        "Desk is booked!",
-                                    ]
-                                )
-                            )
-                        current_date = current_date + timedelta(days=1)
-                return 0
+                        )
+                current_date = current_date + timedelta(days=1)
+        return 0
     except KeyboardInterrupt:
         print("Stopping...")
 
