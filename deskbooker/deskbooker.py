@@ -46,9 +46,7 @@ def main():
             try:
                 from_date = dateutil.parser.parse(args.from_date)
             except dateutil.parser._parser.ParserError:
-                arg_parser.error(
-                    f"{args.from_date} is not a valid date format"
-                )
+                arg_parser.error(f"{args.from_date} is not a valid date format")
             try:
                 to_date = dateutil.parser.parse(args.to_date)
             except dateutil.parser._parser.ParserError:
@@ -58,9 +56,7 @@ def main():
                 try:
                     db_client.update_zone(zone)
                 except Exception:
-                    arg_parser.error(
-                        f"Could not find zone '{zone}' in the desk map."
-                    )
+                    arg_parser.error(f"Could not find zone '{zone}' in the desk map.")
         if args.desk_number is not None:
             desk = args.desk_number
             # print(desk)
@@ -91,15 +87,11 @@ def main():
                 try:
                     from_date = dateutil.parser.parse(args.from_date)
                 except dateutil.parser._parser.ParserError:
-                    arg_parser.error(
-                        f"{args.from_date} is not a valid date format"
-                    )
+                    arg_parser.error(f"{args.from_date} is not a valid date format")
                 try:
                     to_date = dateutil.parser.parse(args.to_date)
                 except dateutil.parser._parser.ParserError:
-                    arg_parser.error(
-                        f"{args.to_date} is not a valid date format"
-                    )
+                    arg_parser.error(f"{args.to_date} is not a valid date format")
                 if args.desk_number is not None:
                     desk = args.desk_number
                     try:

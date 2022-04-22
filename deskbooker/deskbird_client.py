@@ -33,9 +33,7 @@ class DeskbirdClient:
         self.zone_item_id = self.get_zone_item_id(desk_id)
         self.workspace_id = workspace_id
 
-        self.access_token = get_access_token(
-            self.token_key, self.refresh_token
-        )
+        self.access_token = get_access_token(self.token_key, self.refresh_token)
 
     def set_desk(self, desk_id: str):
         if self.zone in DESKS and desk_id in DESKS[self.zone]:
@@ -100,9 +98,7 @@ class DeskbirdClient:
         bookings = json.loads(self.get_bookings().text)
         for booking in bookings["results"]:
             if (
-                datetime.fromtimestamp(
-                    int(booking["bookingStartTime"] / 1000)
-                ).date()
+                datetime.fromtimestamp(int(booking["bookingStartTime"] / 1000)).date()
                 == datetime.today().date()
             ):
                 if booking["checkInStatus"] == "checkedIn":
