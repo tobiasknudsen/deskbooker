@@ -38,8 +38,7 @@ class DeskbirdClient:
         )
 
     def set_desk(self, desk_id: str):
-        zone_keys = DESKS.keys()
-        if self.zone in zone_keys and desk_id in DESKS[self.zone]:
+        if self.zone in DESKS and desk_id in DESKS[self.zone]:
             self.zone_item_id = DESKS[self.zone][desk_id]
 
     def set_zone(self, zone: str):
