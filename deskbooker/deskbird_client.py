@@ -29,7 +29,7 @@ class DeskbirdClient:
         self.zone_item_id = zone_item_id
         self.access_token = get_access_token(self.token_key, self.refresh_token)
 
-    def get_zone_item_id(self, zone_name, desk_id):
+    def set_zone_item_id(self, zone_name, desk_id):
         url = (
             f"https://app.deskbird.com/api/v1.1/internalWorkspaces/"
             f"{self.workspace_id}/zones?internal"
@@ -42,7 +42,7 @@ class DeskbirdClient:
             if zone_name == zone["name"]:
                 for desk in zone["availability"]["zoneItems"]:
                     if desk_id == desk["name"].split(" ")[-1]:
-                        return desk["id"]
+                        self.zone_item_id = desk["id"]
                 raise Exception(f"desk_id: {desk_id} not found in {zone_name}")
         raise Exception(f"zone_name: {zone_name} does not exists")
 

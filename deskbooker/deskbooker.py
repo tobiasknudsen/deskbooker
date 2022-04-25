@@ -55,7 +55,7 @@ def main():
                 return
             if args.zone is not None and args.desk_number is not None:
                 try:
-                    db_client.zone_item_id = db_client.get_zone_item_id(
+                    db_client.set_zone_item_id(
                         zone_name=args.zone, desk_id=args.desk_number
                     )
                 except Exception:
