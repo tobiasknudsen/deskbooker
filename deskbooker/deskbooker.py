@@ -17,8 +17,7 @@ db_client = DeskbirdClient(
     refresh_token=os.environ["REFRESH_TOKEN"],
     token_key=os.environ["TOKEN_KEY"],
     resource_id=os.environ["RESOURCE_ID"],
-    zone=os.environ["ZONE"],
-    desk_id=os.environ["DESK_ID"],
+    zone_item_id=os.environ["ZONE_ITEM_ID"] if "ZONE_ITEM_ID" in os.environ else None,
     workspace_id=os.environ["WORKSPACE_ID"],
 )
 
@@ -51,19 +50,17 @@ def main():
                 to_date = dateutil.parser.parse(args.to_date)
             except dateutil.parser._parser.ParserError:
                 arg_parser.error(f"{args.to_date} is not a valid date format")
-            if args.zone is not None:
+            if (args.zone is None) != (args.desk_number is None):
+                print("Both zone and desk_number is not present.")
+                return
+            if args.zone is not None and args.desk_number is not None:
                 try:
-                    db_client.update_zone(args.zone)
+                    db_client.zone_item_id = db_client.get_zone_item_id(
+                        zone_name=args.zone, desk_id=args.desk_number
+                    )
                 except Exception:
                     arg_parser.error(
                         f"Could not find zone '{args.zone}' in the desk map."
-                    )
-            if args.desk_number is not None:
-                try:
-                    db_client.set_desk(args.desk_number)
-                except Exception:
-                    arg_parser.error(
-                        f"Could not find desk number '{args.desk_number}' in the desk map."
                     )
             current_date = from_date
             while current_date <= to_date:
