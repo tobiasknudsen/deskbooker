@@ -58,7 +58,7 @@ def main():
                     db_client.set_zone_item_id(
                         zone_name=args.zone, desk_id=args.desk_number
                     )
-                except Exception:
+                except KeyError:
                     arg_parser.error(
                         f"Could not find zone '{args.zone}' in the desk map."
                     )

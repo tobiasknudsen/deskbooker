@@ -43,8 +43,8 @@ class DeskbirdClient:
                 for desk in zone["availability"]["zoneItems"]:
                     if desk_id == desk["name"].split(" ")[-1]:
                         self.zone_item_id = desk["id"]
-                raise Exception(f"desk_id: {desk_id} not found in {zone_name}")
-        raise Exception(f"zone_name: {zone_name} does not exists")
+                raise KeyError(f"desk_id: {desk_id} not found in {zone_name}")
+        raise KeyError(f"zone_name: {zone_name} does not exists")
 
     def book_desk(self, date):
         url = "https://web.deskbird.app/api/v1.1/user/bookings"
