@@ -14,8 +14,8 @@ Create a .env file with the following
 - TOKEN_KEY
 - REFRESH_TOKEN
 - RESOURCE_ID
-- ZONE_ITEM_ID
 - WORKSPACE_ID
+- ZONE_ITEM_ID (not required)
 
 \* check the network traffic on web.deskbird.app to find the correct values for your user and the desk you want to book.
 
@@ -25,7 +25,7 @@ Make sure the virtual enviroment is activated
 
 Book multiple days
 ```console
-deskbooker book --to 1970.01.01 --from 1970.01.30
+deskbooker book --to 1970.01.01 --from 1970.01.30 --zone Growth --desk 18
 ```
 
 Check in today
