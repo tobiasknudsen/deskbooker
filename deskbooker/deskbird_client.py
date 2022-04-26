@@ -3,8 +3,6 @@ from datetime import datetime
 
 import requests
 
-from desk_map import DESKS
-
 from .auth import get_access_token
 
 
@@ -13,7 +11,6 @@ class DeskbirdClient:
     refresh_token = None
     token_key = None
     resource_id = None
-    zone = None
     zone_item_id = None
     workspace_id = None
 
@@ -22,32 +19,37 @@ class DeskbirdClient:
         refresh_token,
         token_key,
         resource_id,
-        zone,
-        desk_id,
         workspace_id,
+        zone_item_id=None,
     ):
         self.refresh_token = refresh_token
         self.token_key = token_key
         self.resource_id = resource_id
-        self.zone = zone
-        self.zone_item_id = self.get_zone_item_id(desk_id)
         self.workspace_id = workspace_id
-
+        self.zone_item_id = zone_item_id
         self.access_token = get_access_token(self.token_key, self.refresh_token)
 
-    def set_desk(self, desk_id: str):
-        if self.zone in DESKS and desk_id in DESKS[self.zone]:
-            self.zone_item_id = self.get_zone_item_id(desk_id=desk_id)
-
-    def set_zone(self, zone: str):
-        if zone in DESKS.keys():
-            self.zone = zone
-
-    def get_zone_item_id(self, desk_id):
-        return DESKS[self.zone][desk_id]
+    def set_zone_item_id(self, zone_name, desk_id):
+        url = (
+            f"https://app.deskbird.com/api/v1.1/internalWorkspaces/"
+            f"{self.workspace_id}/zones?internal"
+        )
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+        }
+        response = json.loads(requests.get(url=url, headers=headers).text)
+        for zone in response["results"]:
+            if zone_name == zone["name"]:
+                for desk in zone["availability"]["zoneItems"]:
+                    if desk_id == desk["name"].split(" ")[-1]:
+                        self.zone_item_id = desk["id"]
+                raise KeyError(f"desk_id: {desk_id} not found in {zone_name}")
+        raise KeyError(f"zone_name: {zone_name} does not exists")
 
     def book_desk(self, date):
         url = "https://web.deskbird.app/api/v1.1/user/bookings"
+        if not self.zone_item_id:
+            raise Exception("ZONE_ITEM_ID missing from environment")
         body = {
             "internal": True,
             "isAnonymous": False,
@@ -97,10 +99,11 @@ class DeskbirdClient:
 
         bookings = json.loads(self.get_bookings().text)
         for booking in bookings["results"]:
-            if (
+            is_today = (
                 datetime.fromtimestamp(int(booking["bookingStartTime"] / 1000)).date()
                 == datetime.today().date()
-            ):
+            )
+            if is_today:
                 if booking["checkInStatus"] == "checkedIn":
                     print("Already checked in!")
                     return
