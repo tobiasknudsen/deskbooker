@@ -32,6 +32,7 @@ arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
 arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
 arg_parser.add_argument("-d", "--desk", dest="desk_number", help="Desk number")
 arg_parser.add_argument("-z", "--zone", dest="zone", help="Set zone")
+arg_parser.add_argument("-x", "--debug", dest="debug", help="Get verbose logging")
 
 
 def main():
@@ -58,10 +59,8 @@ def main():
                     db_client.set_zone_item_id(
                         zone_name=args.zone, desk_id=args.desk_number
                     )
-                except KeyError:
-                    arg_parser.error(
-                        f"Could not find zone '{args.zone}' in the desk map."
-                    )
+                except KeyError as e:
+                    arg_parser.error(e)
             current_date = from_date
             while current_date <= to_date:
                 if current_date.weekday() < 5:

@@ -12,7 +12,9 @@ poetry install
 Create a .env file with the following
 
 - TOKEN_KEY
+    - The included in the POST call to ```https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=[TOKEN_KEY]``` when you sign in.
 - REFRESH_TOKEN
+    - The included in the response of the POST call to ```https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=[TOKEN_KEY]``` when you sign in.
 - RESOURCE_ID
 - WORKSPACE_ID
 - ZONE_ITEM_ID (not required)
