@@ -43,6 +43,7 @@ class DeskbirdClient:
                 for desk in zone["availability"]["zoneItems"]:
                     if desk_id == desk["name"].split(" ")[-1]:
                         self.zone_item_id = desk["id"]
+                        return
                 raise KeyError(f"desk_id: {desk_id} not found in {zone_name}")
         raise KeyError(f"zone_name: {zone_name} does not exists")
 
