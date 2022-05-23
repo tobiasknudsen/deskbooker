@@ -48,3 +48,8 @@ Check in today
 ```console
 deskbooker checkin
 ```
+
+See all current bookings
+```console
+deskbooker bookings
+```

@@ -106,7 +106,10 @@ class DeskbirdClient:
             )
             if is_today:
                 if booking["checkInStatus"] == "checkedIn":
-                    print("Already checked in!")
+                    print(
+                        f"Already checked in to {booking['zoneItemName']}"
+                        f" in {booking['resource']['name']}!"
+                    )
                     return
                 else:
                     body["bookingId"] = booking["id"]

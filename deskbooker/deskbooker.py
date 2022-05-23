@@ -3,10 +3,11 @@ import argparse
 import json
 import os
 import sys
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import dateutil.parser
 from dotenv import load_dotenv
+from prettytable import PrettyTable
 
 from .deskbird_client import DeskbirdClient
 
@@ -25,14 +26,13 @@ arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument(
     "function_name",
     type=str,
-    choices=["book", "checkin"],
+    choices=["book", "checkin", "bookings"],
     help="Function name",
 )
 arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
 arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
 arg_parser.add_argument("-d", "--desk", dest="desk_number", help="Desk number")
 arg_parser.add_argument("-z", "--zone", dest="zone", help="Set zone")
-arg_parser.add_argument("-x", "--debug", dest="debug", help="Get verbose logging")
 
 
 def main():
@@ -40,6 +40,21 @@ def main():
         args = arg_parser.parse_args()
         if args.function_name == "checkin":
             db_client.checkin()
+        elif args.function_name == "bookings":
+            bookings = json.loads(db_client.get_bookings(limit=30).text)
+            bookings_table = PrettyTable(["Date", "Zone", "Desk", "Check-in"])
+
+            for booking in bookings["results"]:
+                booking_list = [
+                    datetime.fromtimestamp(
+                        int(booking["bookingStartTime"] / 1000)
+                    ).date(),
+                    booking["resource"]["groupName"],
+                    f"{booking['resource']['name']} {booking['zoneItemName']}",
+                    "✅" if booking["checkInStatus"] == "checkedIn" else "❌",
+                ]
+                bookings_table.add_row(booking_list)
+            print(bookings_table)
         elif args.function_name == "book":
             if args.from_date is None or args.to_date is None:
                 arg_parser.error("book requires --from and --to")
