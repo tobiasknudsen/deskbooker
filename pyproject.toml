@@ -4,14 +4,12 @@ version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 
-[tool.poetry.scripts]
-deskbooker = 'deskbooker.deskbooker:main'
-
 [tool.poetry.dependencies]
 python = "^3.8"
 python-dotenv = "^0.20.0"
 requests = "^2.27.1"
 python-dateutil = "^2.8.2"
+prettytable = "^3.3.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
@@ -22,7 +20,6 @@ isort = "^5.10.1"
 line-length = 88
 target_version = ['py38']
 include = '\.py$'
-
 
 [tool.isort]
 line_length=120
