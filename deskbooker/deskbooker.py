@@ -2,7 +2,6 @@
 import argparse
 import json
 import os
-import sys
 from datetime import datetime, timedelta
 
 import dateutil.parser
@@ -112,4 +111,4 @@ def main():
 
 
 if __name__ == "__main__":
-    globals()[sys.argv[1]]()
+    main()
