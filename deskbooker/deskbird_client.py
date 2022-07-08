@@ -115,3 +115,26 @@ class DeskbirdClient:
                     print("Checked in!")
                     return response
         print("You don't have any valid bookings")
+
+    def cancel_booking(self, date=datetime.today().date()):
+        body = {
+            "workspaceId": self.workspace_id,
+        }
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json",
+        }
+
+        bookings = json.loads(self.get_bookings().text)
+        for booking in bookings["results"]:
+            is_correct_date = (
+                datetime.fromtimestamp(int(booking["bookingStartTime"] / 1000)).date()
+                == date
+            )
+            if is_correct_date:
+                body["userId"] = booking["userId"]
+                url = f"{self.API_BASE_URL}/user/bookings/{booking['id']}/cancel"
+                response = requests.put(url=url, headers=headers, data=json.dumps(body))
+                print(f"{date} canceled")
+                return response
+        print(f"You don't have a booking on {date}")
