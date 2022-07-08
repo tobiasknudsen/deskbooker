@@ -4,19 +4,21 @@ Small tool for booking a desk for multiple days on Deskbird
 
 ## Installation
 
-
+Resolve dependencies via [poetry](https://python-poetry.org/):
 ```console
 poetry install
 ```
+This will also create a script so deskbooker can be run as an executable.
 
 Create a .env file with the following
 
-- TOKEN_KEY
-- REFRESH_TOKEN
-- RESOURCE_ID
-- WORKSPACE_ID
-- ZONE_ITEM_ID (not required)
-
+```
+TOKEN_KEY=AIzaSyCJG2vthfqCzIEfbY343MABk46DAuvncRQ
+REFRESH_TOKEN=AIwUaOl4PgvgD-[...]
+RESOURCE_ID=ckzgue012000u01s6cpjuflnb
+WORKSPACE_ID=ckz8acmgc001i01s6hl75b648
+ZONE_ITEM_ID = 00000 (not required)
+```
 
 \* check the network traffic on web.deskbird.app to find the correct values for your user and the desk you want to book.
 
@@ -47,6 +49,11 @@ deskbooker book --to 1970.01.30 --from 1970.01.01
 Check in today
 ```console
 deskbooker checkin
+```
+
+Cancel todays booking
+```console
+deskbooker cancel
 ```
 
 See all current bookings
