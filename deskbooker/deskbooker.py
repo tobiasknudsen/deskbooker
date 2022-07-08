@@ -2,7 +2,6 @@
 import argparse
 import json
 import os
-import sys
 from datetime import datetime, timedelta
 
 import dateutil.parser
@@ -26,7 +25,7 @@ arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument(
     "function_name",
     type=str,
-    choices=["book", "checkin", "bookings"],
+    choices=["book", "checkin", "bookings", "cancel"],
     help="Function name",
 )
 arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
@@ -40,6 +39,9 @@ def main():
         args = arg_parser.parse_args()
         if args.function_name == "checkin":
             db_client.checkin()
+        elif args.function_name == "cancel":
+            # TODO Add functionality to choose which day to cancel
+            db_client.cancel_booking()
         elif args.function_name == "bookings":
             bookings = json.loads(db_client.get_bookings(limit=30).text)
             bookings_table = PrettyTable(["Date", "Zone", "Desk", "Check-in"])
@@ -109,4 +111,4 @@ def main():
 
 
 if __name__ == "__main__":
-    globals()[sys.argv[1]]()
+    main()

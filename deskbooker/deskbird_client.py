@@ -13,6 +13,8 @@ class DeskbirdClient:
     resource_id = None
     zone_item_id = None
     workspace_id = None
+    API_BASE_URL = "https://app.deskbird.com/api/v1.1"
+    APP_BASE_URL = "https://web.deskbird.app/api/v1.1"
 
     def __init__(
         self,
@@ -31,7 +33,7 @@ class DeskbirdClient:
 
     def set_zone_item_id(self, zone_name, desk_id):
         url = (
-            f"https://app.deskbird.com/api/v1.1/internalWorkspaces/"
+            f"{self.API_BASE_URL}/internalWorkspaces/"
             f"{self.workspace_id}/zones?internal"
         )
         headers = {
@@ -48,7 +50,7 @@ class DeskbirdClient:
         raise KeyError(f"zone_name: {zone_name} does not exists")
 
     def book_desk(self, date):
-        url = "https://web.deskbird.app/api/v1.1/user/bookings"
+        url = f"{self.APP_BASE_URL}/user/bookings"
         if not self.zone_item_id:
             raise Exception("ZONE_ITEM_ID missing from environment")
         body = {
@@ -73,10 +75,7 @@ class DeskbirdClient:
         return requests.post(url, headers=headers, data=json.dumps(body))
 
     def get_bookings(self, limit=10):
-        url = (
-            "https://app.deskbird.com/api/v1.1/user/bookings"
-            f"?upcoming=true&skip=0&limit={limit}"
-        )
+        url = f"{self.API_BASE_URL}/user/bookings?upcoming=true&skip=0&limit={limit}"
         headers = {
             "Authorization": f"Bearer {self.access_token}",
         }
@@ -84,10 +83,7 @@ class DeskbirdClient:
         return requests.get(url, headers=headers)
 
     def checkin(self):
-        url = (
-            f"https://app.deskbird.com/api/v1.1/workspaces/"
-            f"{self.workspace_id}/checkIn"
-        )
+        url = f"{self.API_BASE_URL}/workspaces/{self.workspace_id}/checkIn"
         body = {
             "isInternal": True,
             "resourceId": self.resource_id,
@@ -119,3 +115,26 @@ class DeskbirdClient:
                     print("Checked in!")
                     return response
         print("You don't have any valid bookings")
+
+    def cancel_booking(self, date=datetime.today().date()):
+        body = {
+            "workspaceId": self.workspace_id,
+        }
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json",
+        }
+
+        bookings = json.loads(self.get_bookings().text)
+        for booking in bookings["results"]:
+            is_correct_date = (
+                datetime.fromtimestamp(int(booking["bookingStartTime"] / 1000)).date()
+                == date
+            )
+            if is_correct_date:
+                body["userId"] = booking["userId"]
+                url = f"{self.API_BASE_URL}/user/bookings/{booking['id']}/cancel"
+                response = requests.put(url=url, headers=headers, data=json.dumps(body))
+                print(f"{date} canceled")
+                return response
+        print(f"You don't have a booking on {date}")
