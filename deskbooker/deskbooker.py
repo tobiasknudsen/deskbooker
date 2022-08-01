@@ -2,7 +2,7 @@
 import argparse
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import dateutil.parser
 from dotenv import load_dotenv
@@ -78,33 +78,42 @@ def main():
                     )
                 except KeyError as e:
                     arg_parser.error(e)
-            current_date = from_date
-            while current_date <= to_date:
-                if current_date.weekday() < 5:
-                    response = db_client.book_desk(current_date)
-                    if response.status_code != 201:
-                        print(
-                            " | ".join(
-                                [
-                                    str(current_date.date()),
-                                    str(response.status_code),
-                                    response.reason,
-                                    json.loads(response.text)["message"],
-                                ]
-                            )
+            response = db_client.book_desk(from_date=from_date, to_date=to_date)
+            data_response = json.loads(response.text)
+            bookings = [
+                booking["booking"]
+                for booking in data_response["data"]["successfulBookings"]
+            ] + data_response["data"]["failedBookings"]
+            bookings = sorted(bookings, key=lambda booking: booking["bookingStartTime"])
+            for booking in bookings:
+                if "errorCode" in booking:
+                    print(
+                        " | ".join(
+                            [
+                                "❌",
+                                str(
+                                    datetime.fromtimestamp(
+                                        booking["bookingStartTime"] / 1000
+                                    ).date()
+                                ),
+                                str(booking["errorCode"]),
+                            ]
                         )
-                    else:
-                        print(
-                            " | ".join(
-                                [
-                                    str(current_date.date()),
-                                    str(response.status_code),
-                                    response.reason,
-                                    "Desk is booked!",
-                                ]
-                            )
+                    )
+                else:
+                    print(
+                        " | ".join(
+                            [
+                                "✅",
+                                str(
+                                    datetime.fromtimestamp(
+                                        booking["bookingStartTime"] / 1000
+                                    ).date()
+                                ),
+                                str(booking["bookingStatus"]),
+                            ]
                         )
-                current_date = current_date + timedelta(days=1)
+                    )
         return 0
     except KeyboardInterrupt:
         print("Stopping...")
