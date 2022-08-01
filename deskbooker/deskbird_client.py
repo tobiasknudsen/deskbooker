@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 
@@ -49,28 +49,36 @@ class DeskbirdClient:
                 raise KeyError(f"desk_id: {desk_id} not found in {zone_name}")
         raise KeyError(f"zone_name: {zone_name} does not exists")
 
-    def book_desk(self, date):
-        url = f"{self.APP_BASE_URL}/user/bookings"
+    def book_desk(self, from_date, to_date):
+        url = f"{self.API_BASE_URL}/multipleDayBooking"
         if not self.zone_item_id:
             raise Exception("ZONE_ITEM_ID missing from environment")
         body = {
-            "internal": True,
-            "isAnonymous": False,
-            "isDayPass": True,
-            "resourceId": self.resource_id,
-            "zoneItemId": self.zone_item_id,
-            "workspaceId": self.workspace_id,
+            "bookings": [],
         }
         headers = {
             "Authorization": f"Bearer {self.access_token}",
             "Content-Type": "application/json",
         }
-
-        start_time = end_time = date
-        start_time = start_time.replace(hour=9)
-        end_time = end_time.replace(hour=17)
-        body["bookingStartTime"] = int(start_time.timestamp() * 1000)
-        body["bookingEndTime"] = int(end_time.timestamp() * 1000)
+        current_date = from_date
+        while current_date <= to_date:
+            if current_date.weekday() < 5:
+                start_time = end_time = current_date
+                start_time = start_time.replace(hour=9)
+                end_time = end_time.replace(hour=17)
+                body["bookings"].append(
+                    {
+                        "internal": True,
+                        "isAnonymous": False,
+                        "isDayPass": True,
+                        "resourceId": self.resource_id,
+                        "zoneItemId": self.zone_item_id,
+                        "workspaceId": self.workspace_id,
+                        "bookingStartTime": int(start_time.timestamp() * 1000),
+                        "bookingEndTime": int(end_time.timestamp() * 1000),
+                    }
+                )
+            current_date = current_date + timedelta(days=1)
 
         return requests.post(url, headers=headers, data=json.dumps(body))
 
