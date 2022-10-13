@@ -8,7 +8,9 @@ Resolve dependencies via [poetry](https://python-poetry.org/):
 ```console
 poetry install
 ```
-This will also create a script so deskbooker can be run as an executable.
+
+I have just set up an alias to run it from wherever.
+```deskbooker='~/dev/deskbooker/.venv/bin/python ~/dev/deskbooker/deskbooker/deskbooker.py'```
 
 Create a .env file with the following
 

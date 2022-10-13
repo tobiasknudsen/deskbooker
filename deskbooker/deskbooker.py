@@ -5,10 +5,9 @@ import os
 from datetime import datetime
 
 import dateutil.parser
+from deskbird_client import DeskbirdClient
 from dotenv import load_dotenv
 from prettytable import PrettyTable
-
-from .deskbird_client import DeskbirdClient
 
 load_dotenv()
 
@@ -51,7 +50,7 @@ def main():
                     datetime.fromtimestamp(
                         int(booking["bookingStartTime"] / 1000)
                     ).date(),
-                    booking["resource"]["groupName"],
+                    booking["workspace"]["name"],
                     f"{booking['resource']['name']} {booking['zoneItemName']}",
                     "✅" if booking["checkInStatus"] == "checkedIn" else "❌",
                 ]

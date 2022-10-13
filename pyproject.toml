@@ -11,9 +11,6 @@ requests = "^2.27.1"
 python-dateutil = "^2.8.2"
 prettytable = "^3.3.0"
 
-[tool.poetry.scripts]
-deskbooker = 'deskbooker.deskbooker:main'
-
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
 flake8 = "^4.0.1"
