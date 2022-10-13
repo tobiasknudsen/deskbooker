@@ -62,3 +62,18 @@ See all current bookings
 ```console
 deskbooker bookings
 ```
+
+### Daily runner
+
+I have set up a cronjob that runs ```daily_runner.py``` every morning at 8:55. If i'm connected to one of the office WIFIs it checks me in, if not it cancels my booking.
+
+Make sure you have added the name(s) of your office WIFIs to your .env file seperated by "```,```"
+
+```console
+crontab -e
+```
+
+Add
+
+```55 8 * * 1-5 [path_to_deskbooker]/.venv/bin/python [path_to_deskbooker]/deskbooker/daily_runner.py```
+to run it monday-friday at 8:55.
