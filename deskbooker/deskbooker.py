@@ -50,7 +50,7 @@ def main():
                     datetime.fromtimestamp(
                         int(booking["bookingStartTime"] / 1000)
                     ).date(),
-                    booking["resource"]["groupName"],
+                    booking["workspace"]["name"],
                     f"{booking['resource']['name']} {booking['zoneItemName']}",
                     "✅" if booking["checkInStatus"] == "checkedIn" else "❌",
                 ]
