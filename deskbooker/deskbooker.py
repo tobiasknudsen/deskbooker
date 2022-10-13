@@ -5,10 +5,9 @@ import os
 from datetime import datetime
 
 import dateutil.parser
+from deskbird_client import DeskbirdClient
 from dotenv import load_dotenv
 from prettytable import PrettyTable
-
-from .deskbird_client import DeskbirdClient
 
 load_dotenv()
 

@@ -2,8 +2,7 @@ import json
 from datetime import datetime, timedelta
 
 import requests
-
-from .auth import get_access_token
+from auth import get_access_token
 
 
 class DeskbirdClient:
