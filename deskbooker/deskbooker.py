@@ -98,31 +98,33 @@ db_client = DeskbirdClient(
     workspace_id=os.environ["WORKSPACE_ID"],
 )
 
+
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument(
-    "function_name",
-    type=str,
-    choices=["book", "checkin", "bookings", "cancel"],
-    help="Function name",
+subparsers = arg_parser.add_subparsers(help="sub-command help")
+
+book_parser = subparsers.add_parser("book", help="book help")
+book_parser.set_defaults(func=book)
+book_parser.add_argument(
+    "-f", "--from", dest="from_date", help="From date", required=True
 )
-arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
-arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
-arg_parser.add_argument("-d", "--desk", dest="desk_number", help="Desk number")
-arg_parser.add_argument("-z", "--zone", dest="zone", help="Set zone")
+book_parser.add_argument("-t", "--to", dest="to_date", help="To date", required=True)
+book_parser.add_argument("-d", "--desk", dest="desk_number", help="Desk number")
+book_parser.add_argument("-z", "--zone", dest="zone", help="Set zone")
+
+checkin_parser = subparsers.add_parser("checkin", help="checkin help")
+checkin_parser.set_defaults(func=checkin)
+
+bookings_parser = subparsers.add_parser("bookings", help="bookings help")
+bookings_parser.set_defaults(func=bookings)
+
+cancel_parser = subparsers.add_parser("cancel", help="cancel help")
+cancel_parser.set_defaults(func=cancel)
 
 
 def main():
     try:
         args = arg_parser.parse_args()
-        if args.function_name == "checkin":
-            checkin(args)
-        elif args.function_name == "cancel":
-            cancel(args)
-        elif args.function_name == "bookings":
-            bookings(args)
-        elif args.function_name == "book":
-            book(args)
-        return 0
+        args.func(args)
     except KeyboardInterrupt:
         print("Stopping...")
 
