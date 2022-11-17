@@ -123,7 +123,7 @@ class DeskbirdClient:
                     return response
         print("You don't have any valid bookings")
 
-    def cancel_booking(self, date=datetime.today().date()):
+    def cancel_booking(self, from_date, to_date):
         body = {
             "workspaceId": self.workspace_id,
         }
@@ -131,17 +131,25 @@ class DeskbirdClient:
             "Authorization": f"Bearer {self.access_token}",
             "Content-Type": "application/json",
         }
+        bookings = json.loads(self.get_bookings(limit=30).text)
 
-        bookings = json.loads(self.get_bookings().text)
-        for booking in bookings["results"]:
-            is_correct_date = (
-                datetime.fromtimestamp(int(booking["bookingStartTime"] / 1000)).date()
-                == date
-            )
-            if is_correct_date:
-                body["userId"] = booking["userId"]
-                url = f"{self.API_BASE_URL}/user/bookings/{booking['id']}/cancel"
-                response = requests.put(url=url, headers=headers, data=json.dumps(body))
-                print(f"{date} canceled")
-                return response
-        print(f"You don't have a booking on {date}")
+        current_date = from_date
+        while current_date <= to_date:
+            has_booking = False
+            for booking in bookings["results"]:
+                is_correct_date = (
+                    datetime.fromtimestamp(
+                        int(booking["bookingStartTime"] / 1000)
+                    ).date()
+                    == current_date.date()
+                )
+                if is_correct_date:
+                    body["userId"] = booking["userId"]
+                    url = f"{self.API_BASE_URL}/user/bookings/{booking['id']}/cancel"
+                    requests.put(url=url, headers=headers, data=json.dumps(body))
+                    has_booking = True
+                    print(f"{current_date.date()} canceled")
+                    break
+            if not has_booking:
+                print(f"You don't have a booking on {current_date.date()}")
+            current_date += timedelta(days=1)
