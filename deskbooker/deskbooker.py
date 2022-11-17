@@ -17,7 +17,20 @@ def checkin(args):
 
 
 def cancel(args):
-    db_client.cancel_booking()
+    if args.from_date is None and args.to_date is None:
+        from_date = to_date = datetime.today()
+    elif args.from_date and args.to_date:
+        try:
+            from_date = dateutil.parser.parse(args.from_date)
+        except dateutil.parser._parser.ParserError:
+            arg_parser.error(f"{args.from_date} is not a valid date format")
+        try:
+            to_date = dateutil.parser.parse(args.to_date)
+        except dateutil.parser._parser.ParserError:
+            arg_parser.error(f"{args.to_date} is not a valid date format")
+    else:
+        arg_parser.error("the following arguments are required: -f/--from, -t/--to")
+    db_client.cancel_booking(from_date, to_date)
 
 
 def bookings(args):
@@ -118,6 +131,10 @@ bookings_parser = subparsers.add_parser("bookings", help="bookings help")
 bookings_parser.set_defaults(func=bookings)
 
 cancel_parser = subparsers.add_parser("cancel", help="cancel help")
+cancel_parser.add_argument(
+    "-f", "--from", dest="from_date", help="From date", required=False
+)
+cancel_parser.add_argument("-t", "--to", dest="to_date", help="To date", required=False)
 cancel_parser.set_defaults(func=cancel)
 
 
