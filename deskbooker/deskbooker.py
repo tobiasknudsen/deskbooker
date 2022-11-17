@@ -12,27 +12,6 @@ from prettytable import PrettyTable
 load_dotenv()
 
 
-db_client = DeskbirdClient(
-    refresh_token=os.environ["REFRESH_TOKEN"],
-    token_key=os.environ["TOKEN_KEY"],
-    resource_id=os.environ["RESOURCE_ID"],
-    zone_item_id=os.environ["ZONE_ITEM_ID"] if "ZONE_ITEM_ID" in os.environ else None,
-    workspace_id=os.environ["WORKSPACE_ID"],
-)
-
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument(
-    "function_name",
-    type=str,
-    choices=["book", "checkin", "bookings", "cancel"],
-    help="Function name",
-)
-arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
-arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
-arg_parser.add_argument("-d", "--desk", dest="desk_number", help="Desk number")
-arg_parser.add_argument("-z", "--zone", dest="zone", help="Set zone")
-
-
 def checkin(args):
     db_client.checkin()
 
@@ -109,6 +88,27 @@ def book(args):
                     ]
                 )
             )
+
+
+db_client = DeskbirdClient(
+    refresh_token=os.environ["REFRESH_TOKEN"],
+    token_key=os.environ["TOKEN_KEY"],
+    resource_id=os.environ["RESOURCE_ID"],
+    zone_item_id=os.environ["ZONE_ITEM_ID"] if "ZONE_ITEM_ID" in os.environ else None,
+    workspace_id=os.environ["WORKSPACE_ID"],
+)
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument(
+    "function_name",
+    type=str,
+    choices=["book", "checkin", "bookings", "cancel"],
+    help="Function name",
+)
+arg_parser.add_argument("-f", "--from", dest="from_date", help="From date")
+arg_parser.add_argument("-t", "--to", dest="to_date", help="To date")
+arg_parser.add_argument("-d", "--desk", dest="desk_number", help="Desk number")
+arg_parser.add_argument("-z", "--zone", dest="zone", help="Set zone")
 
 
 def main():
